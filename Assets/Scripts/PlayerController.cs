@@ -251,6 +251,24 @@ public class PlayerController : MonoBehaviour
         m_Pitch= 0.0f;
         m_CharacterController.enabled=true;
     }
+    public bool CanPickAmmo()
+    {
+        Debug.Log("not yet implemented");
+        return true;
+    }
+    public void AddAmmo(int AmmoCount)
+    {
+        Debug.Log("not yet implemented");
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.tag == "Item")
+        {
+            Item l_Item=other.GetComponent<Item>();
+            if(l_Item.CanPick())
+                l_Item.Pick();
+        }
+    }
 
 }
 
