@@ -54,6 +54,8 @@ public class PlayerController : MonoBehaviour
     float m_VerticalSpeed;
 
     public Camera m_Camera;
+    Vector3 m_StratPosition;
+    Quaternion m_StartRotation;
 
     float m_LastTimeOnFloor;
     float m_FloorTime;
@@ -61,6 +63,21 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         m_CharacterController = GetComponent<CharacterController>();
+        if(GameController.GetGameController().m_Player == null)
+        {
+            GameController.GetGameController().m_Player = this;
+            GameController.DontDestroyOnLoad(gameObject);
+            m_StratPosition = transform.position;
+            m_StartRotation = transform.rotation;
+            m_Yaw=transform.rotation.eulerAngles.y;
+        }
+        else
+        {
+            GameController.GetGameController().m_Player.SetStartPosition(transform);
+            GameObject.Destroy(this.gameObject);
+        }
+
+        
     }
     // Start is called before the first frame update
     void Start()
@@ -179,7 +196,7 @@ public class PlayerController : MonoBehaviour
     }
     void CreateShootParticles(Vector3 Position, Vector3 Normal)
     {
-        GameObject l_HitParticle = GameObject.Instantiate(m_HitPatriclePrefab);
+        GameObject l_HitParticle = GameObject.Instantiate(m_HitPatriclePrefab, GameController.GetGameController().m_DestroyObjects.transform);
         l_HitParticle.transform.position = Position;
         l_HitParticle.transform.rotation = Quaternion.LookRotation(Normal);
     }
@@ -212,6 +229,27 @@ public class PlayerController : MonoBehaviour
     void SetReloadWeaponAnimation()
     {
         //m_ReloadAnimation;
+    }
+    public void RestartLevel()
+    {
+        m_CharacterController.enabled=false;
+        transform.position = m_StratPosition;
+        transform.rotation = m_StartRotation;
+        m_Yaw=transform.rotation.eulerAngles.y;
+        m_Pitch= 0.0f;
+        m_CharacterController.enabled=true;
+        
+    }
+    void SetStartPosition(Transform StartTransform)
+    {
+        m_StratPosition=StartTransform.position;
+        m_StartRotation=StartTransform.rotation;
+        m_CharacterController.enabled=false;
+        transform.position = m_StratPosition;
+        transform.rotation = m_StartRotation;
+        m_Yaw=transform.rotation.eulerAngles.y;
+        m_Pitch= 0.0f;
+        m_CharacterController.enabled=true;
     }
 
 }
