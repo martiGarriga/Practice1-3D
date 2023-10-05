@@ -29,7 +29,22 @@ public class PlayerController : MonoBehaviour
     public KeyCode m_ForwardKeyCode = KeyCode.W;
     public KeyCode m_JumpKeyCode = KeyCode.Space;
     public KeyCode m_SprintKeyCode = KeyCode.LeftShift;
+    public KeyCode m_ReloadKeyCode = KeyCode.R;
     public int m_lefMouseButton;
+
+    [Header("Debug Input")]
+    public KeyCode m_DebugLockAngleKeyCode = KeyCode.I;
+    public KeyCode m_DebugLockKeyCode = KeyCode.O;
+    bool m_AngleLocked = false;
+    bool m_AimLocked = true;
+
+    [Header("Animation")]
+    public Animation m_WeaponAnimation;
+    public AnimationClip m_IdleAnimation;
+    public AnimationClip m_ShootAnimation;
+    public AnimationClip m_ReloadAnimation;
+
+    public int m_ShootMousenButton = 0;
 
     public float m_jumpSpeed;
     public float m_sprintSpeed;
@@ -50,15 +65,43 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //#if UNITY_EDITOR
 
+        //#else
+
+        //#endif
+
+        Cursor.lockState = CursorLockMode.Locked;
+        SetIdWeaponAnimation();
     }
 
     // Update is called once per frame
     void Update()
     {
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(m_DebugLockAngleKeyCode))
+            m_AngleLocked = !m_AngleLocked;
+
+        if (Input.GetKeyDown(m_DebugLockKeyCode))
+        {
+            if (Cursor.lockState == CursorLockMode.Locked)
+                Cursor.lockState = CursorLockMode.None;
+            else
+                Cursor.lockState = CursorLockMode.Locked;
+            m_AimLocked = Cursor.lockState == CursorLockMode.Locked;
+        }
+#endif
+
+
         float l_HorizontalMovement = Input.GetAxis("Mouse X"); //movimiento x
         float l_VerticalMovement = Input.GetAxis("Mouse Y"); //movimiento y
         float l_Speed = m_Speed; // le da a la variable local el valor de la variable global
+
+        if (m_AngleLocked)
+        {
+            l_HorizontalMovement = 0.0f;
+            l_VerticalMovement = 0.0f;
+        }
 
         if (Input.GetKeyDown(m_JumpKeyCode) && m_VerticalSpeed == 0.0f)
             m_VerticalSpeed = m_jumpSpeed;
@@ -114,8 +157,10 @@ public class PlayerController : MonoBehaviour
         if ((l_CollisionFlags & CollisionFlags.CollidedBelow) != 0 && m_VerticalSpeed > 0.0f)
             m_VerticalSpeed = 0.0f;
 
-        if (Input.GetMouseButtonDown(m_lefMouseButton))
+        if (Input.GetMouseButtonDown(m_lefMouseButton) && CanShoot())
             Shoot();
+        if (Input.GetKeyDown(m_ReloadKeyCode) && CanReload())
+            Reload();
 
         m_LastTimeOnFloor += Time.deltaTime;
         if (CanJump())
@@ -129,6 +174,7 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value))
         {
             CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
+            SetShootWeaponAnimation();
         }
     }
     void CreateShootParticles(Vector3 Position, Vector3 Normal)
@@ -141,5 +187,32 @@ public class PlayerController : MonoBehaviour
     {
         return m_LastTimeOnFloor < m_FloorTime;
     }
+    void Reload()
+    {
+        SetReloadWeaponAnimation();
+    }
+    bool CanReload()
+    {
+        return true;
+    }
+    bool CanShoot()
+    {
+        return true;
+    }
+    void SetIdWeaponAnimation()
+    {
+        m_WeaponAnimation.CrossFade(m_IdleAnimation.name);
+    }
+    void SetShootWeaponAnimation()
+    {
+        m_WeaponAnimation.CrossFade(m_ShootAnimation.name, 0.1f);
+        m_WeaponAnimation.CrossFadeQueued(m_IdleAnimation.name, 0.1f);
+
+    }
+    void SetReloadWeaponAnimation()
+    {
+        //m_ReloadAnimation;
+    }
+
 }
 
