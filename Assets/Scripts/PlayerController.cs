@@ -60,8 +60,17 @@ public class PlayerController : MonoBehaviour
     float m_LastTimeOnFloor;
     float m_FloorTime;
 
+    float m_AmmoRemaining;
+    public float m_TotalAmmo;
+    public float m_CHARGERCAPACITY;
+
+    public float m_Cadence;
+    float timer;
+
     private void Awake()
     {
+        m_AmmoRemaining = m_CHARGERCAPACITY;
+
         m_CharacterController = GetComponent<CharacterController>();
         if(GameController.GetGameController().m_Player == null)
         {
@@ -77,7 +86,7 @@ public class PlayerController : MonoBehaviour
             GameObject.Destroy(this.gameObject);
         }
 
-        
+        timer = m_Cadence;
     }
     // Start is called before the first frame update
     void Start()
@@ -90,6 +99,7 @@ public class PlayerController : MonoBehaviour
 
         Cursor.lockState = CursorLockMode.Locked;
         SetIdWeaponAnimation();
+        
     }
 
     // Update is called once per frame
@@ -108,8 +118,6 @@ public class PlayerController : MonoBehaviour
             m_AimLocked = Cursor.lockState == CursorLockMode.Locked;
         }
 #endif
-
-
         float l_HorizontalMovement = Input.GetAxis("Mouse X"); //movimiento x
         float l_VerticalMovement = Input.GetAxis("Mouse Y"); //movimiento y
         float l_Speed = m_Speed; // le da a la variable local el valor de la variable global
@@ -186,11 +194,17 @@ public class PlayerController : MonoBehaviour
     }
     void Shoot()
     {
+
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         RaycastHit l_RaycastHit;
-        if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value))
+        if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value) && m_AmmoRemaining > 0)
         {
+            SetShootWeaponAnimation();
             CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
+            BulletShooted();
+        }
+        else
+        {
             SetShootWeaponAnimation();
         }
     }
@@ -207,14 +221,29 @@ public class PlayerController : MonoBehaviour
     void Reload()
     {
         SetReloadWeaponAnimation();
+        float l_nextCharger = m_CHARGERCAPACITY - m_AmmoRemaining;
+        m_TotalAmmo = m_TotalAmmo - l_nextCharger;
+        m_AmmoRemaining = m_CHARGERCAPACITY;
     }
     bool CanReload()
     {
-        return true;
+        if (m_TotalAmmo != 0)
+            return true;
+        else
+            return false;
+
     }
     bool CanShoot()
     {
-        return true;
+        timer++;
+        if (timer >= m_Cadence)
+        {
+            timer = 0;
+            return true;
+        }
+        else return false;
+
+       
     }
     void SetIdWeaponAnimation()
     {
@@ -228,7 +257,8 @@ public class PlayerController : MonoBehaviour
     }
     void SetReloadWeaponAnimation()
     {
-        //m_ReloadAnimation;
+        m_WeaponAnimation.CrossFade(m_ReloadAnimation.name, 0.1f);
+        m_WeaponAnimation.CrossFadeQueued(m_IdleAnimation.name, 0.1f);
     }
     public void RestartLevel()
     {
@@ -253,22 +283,26 @@ public class PlayerController : MonoBehaviour
     }
     public bool CanPickAmmo()
     {
-        Debug.Log("not yet implemented");
         return true;
     }
     public void AddAmmo(int AmmoCount)
     {
-        Debug.Log("not yet implemented");
+        m_TotalAmmo += AmmoCount;
     }
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Item")
         {
+            Debug.Log("ENTRA");
             Item l_Item=other.GetComponent<Item>();
             if(l_Item.CanPick())
                 l_Item.Pick();
         }
     }
+    public void BulletShooted()
+    {
 
+        m_AmmoRemaining--;
+    }
 }
 

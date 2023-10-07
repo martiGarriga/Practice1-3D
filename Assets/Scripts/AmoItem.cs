@@ -12,6 +12,7 @@ public class AmoItem : Item
     public override void Pick()
     {
         GameController.GetGameController().m_Player.AddAmmo(m_AmmoCount);
+        GameObject.Destroy(gameObject);
     }
     
 }
