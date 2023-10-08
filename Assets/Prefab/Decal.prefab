@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9119652909250766745}
   - component: {fileID: -2696799484752528764}
+  - component: {fileID: 8763241339199267406}
   m_Layer: 0
   m_Name: Decal
   m_TagString: Untagged
@@ -45,7 +46,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81dc91c7f0e54544b86f971709f714d9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_DestroyOnTime: 1
+  m_DestroyOnTime: 0.75
+--- !u!111 &8763241339199267406
+Animation:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9119652909250766746}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Animation: {fileID: 7400000, guid: 2d297e0f985f7a6448a0debc2575cdb9, type: 2}
+  m_Animations:
+  - {fileID: 7400000, guid: 2d297e0f985f7a6448a0debc2575cdb9, type: 2}
+  m_WrapMode: 0
+  m_PlayAutomatically: 1
+  m_AnimatePhysics: 0
+  m_CullingType: 0
 --- !u!1 &9119652909253993744
 GameObject:
   m_ObjectHideFlags: 0

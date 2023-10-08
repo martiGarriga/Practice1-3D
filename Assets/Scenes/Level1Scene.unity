@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 705507994}
-  m_IndirectSpecularColor: {r: 0.18229222, g: 0.22799791, b: 0.30733132, a: 1}
+  m_IndirectSpecularColor: {r: 0.18229261, g: 0.22799861, b: 0.3073327, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -191,8 +191,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 19545278}
-  m_LocalRotation: {x: 0.24119838, y: 0.26961374, z: 0.06978788, w: -0.9296567}
-  m_LocalPosition: {x: 14.356219, y: -19.192955, z: 23.06888}
+  m_LocalRotation: {x: -0.24077165, y: 0.5497856, z: 0.16938424, w: 0.7817121}
+  m_LocalPosition: {x: 5.8063383, y: -15.035208, z: 18.069435}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -562,8 +562,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 791134662}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5104823, y: -8.118906, z: 2.6020977}
+  m_LocalRotation: {x: -0.04978049, y: 0.018886436, z: 0.000984881, w: 0.9985811}
+  m_LocalPosition: {x: -2.2549832, y: -7.0491323, z: 4.3011627}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -637,8 +637,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 818964188}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 1.5104823, y: -8.118906, z: 2.6020977}
+  m_LocalRotation: {x: -0.04978049, y: 0.018886436, z: 0.000984881, w: 0.9985811}
+  m_LocalPosition: {x: -2.2549832, y: -7.0491323, z: 4.3011627}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -981,8 +981,8 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1258468403}
-  m_LocalRotation: {x: 0.2163714, y: 0.2433149, z: 0.055622205, w: -0.9438684}
-  m_LocalPosition: {x: 20.183908, y: -24.474485, z: 9.239834}
+  m_LocalRotation: {x: -0.24077165, y: 0.5497856, z: 0.16938424, w: 0.7817121}
+  m_LocalPosition: {x: 5.8063383, y: -15.035208, z: 18.069435}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
