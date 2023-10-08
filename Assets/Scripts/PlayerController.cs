@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -67,6 +68,10 @@ public class PlayerController : MonoBehaviour
     public float m_Cadence;
     float timer;
 
+    [Header("UI Player")]
+    public Text m_AmmoDisplay;
+    public Text m_TotalAmmoDisplay;
+
     private void Awake()
     {
         m_AmmoRemaining = m_CHARGERCAPACITY;
@@ -118,6 +123,11 @@ public class PlayerController : MonoBehaviour
             m_AimLocked = Cursor.lockState == CursorLockMode.Locked;
         }
 #endif
+        m_AmmoDisplay.text = m_AmmoRemaining.ToString();
+        m_TotalAmmoDisplay.text = m_TotalAmmo.ToString();
+
+        timer = timer + Time.deltaTime;
+
         float l_HorizontalMovement = Input.GetAxis("Mouse X"); //movimiento x
         float l_VerticalMovement = Input.GetAxis("Mouse Y"); //movimiento y
         float l_Speed = m_Speed; // le da a la variable local el valor de la variable global
@@ -191,6 +201,7 @@ public class PlayerController : MonoBehaviour
         if (CanJump())
             m_LastTimeOnFloor = 0.0f;
 
+        print(timer);
     }
     void Shoot()
     {
@@ -205,6 +216,8 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            if(m_AmmoRemaining>0)
+                m_AmmoRemaining--;
             SetShootWeaponAnimation();
         }
     }
@@ -222,8 +235,16 @@ public class PlayerController : MonoBehaviour
     {
         SetReloadWeaponAnimation();
         float l_nextCharger = m_CHARGERCAPACITY - m_AmmoRemaining;
-        m_TotalAmmo = m_TotalAmmo - l_nextCharger;
-        m_AmmoRemaining = m_CHARGERCAPACITY;
+        if (l_nextCharger > m_TotalAmmo)
+        {
+            m_AmmoRemaining += m_TotalAmmo;
+            m_TotalAmmo = 0;
+        }
+        else
+        {
+            m_TotalAmmo = m_TotalAmmo - l_nextCharger;
+            m_AmmoRemaining = m_CHARGERCAPACITY;
+        }
     }
     bool CanReload()
     {
@@ -235,8 +256,7 @@ public class PlayerController : MonoBehaviour
     }
     bool CanShoot()
     {
-        timer++;
-        if (timer >= m_Cadence)
+        if (timer > m_Cadence)
         {
             timer = 0;
             return true;
@@ -301,8 +321,9 @@ public class PlayerController : MonoBehaviour
     }
     public void BulletShooted()
     {
+        if(m_AmmoRemaining>0)
+            m_AmmoRemaining--;
 
-        m_AmmoRemaining--;
     }
 }
 
