@@ -63,10 +63,17 @@ public class PlayerController : MonoBehaviour
 
     float m_AmmoRemaining;
     public float m_TotalAmmo;
+    float m_MAX_TotalAmmo;
     public float m_CHARGERCAPACITY;
 
     public float m_Cadence;
     float timer;
+
+    [Header("Life and Shield")]
+    float m_ActualLife;
+    public float m_MAX_Life;
+    float m_Shield;
+    public float m_MAX_Shield;
 
     [Header("UI Player")]
     public Text m_AmmoDisplay;
@@ -74,7 +81,10 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        m_ActualLife = m_MAX_Life;
+        m_Shield = m_MAX_Shield;
         m_AmmoRemaining = m_CHARGERCAPACITY;
+        m_MAX_TotalAmmo = m_TotalAmmo;
 
         m_CharacterController = GetComponent<CharacterController>();
         if(GameController.GetGameController().m_Player == null)
@@ -303,27 +313,93 @@ public class PlayerController : MonoBehaviour
     }
     public bool CanPickAmmo()
     {
-        return true;
+        if(m_TotalAmmo >= m_MAX_TotalAmmo)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+        
     }
     public void AddAmmo(int AmmoCount)
     {
         m_TotalAmmo += AmmoCount;
+        m_TotalAmmo = Mathf.Clamp(m_TotalAmmo, 0f, m_MAX_TotalAmmo);
     }
     private void OnTriggerEnter(Collider other)
     {
         if(other.tag == "Item")
         {
-            Debug.Log("ENTRA");
             Item l_Item=other.GetComponent<Item>();
             if(l_Item.CanPick())
                 l_Item.Pick();
         }
     }
+    public bool CanPickLife()
+    {
+        if(m_ActualLife >= m_MAX_Life)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public void AddLife(int LifeCount)
+    {
+        m_ActualLife += LifeCount;
+        m_ActualLife = Mathf.Clamp(m_ActualLife, 0f, m_MAX_Life);
+    }
+    public bool CanPickShield()
+    {
+        if(m_Shield >= m_MAX_Shield)
+        {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+    public void AddShield(int ShieldCount)
+    {
+        m_Shield += ShieldCount;
+        m_Shield = Mathf.Clamp(m_Shield, 0f, m_MAX_Shield);
+    }
+
+
+
     public void BulletShooted()
     {
         if(m_AmmoRemaining>0)
             m_AmmoRemaining--;
 
+    }
+    public void UpdateLife(float l_Life, float l_Shield)
+    {
+        m_ActualLife = l_Life;
+        m_Shield = l_Shield;
+    }
+    public void TakeDamage(float l_Damage)
+    {
+        if(m_Shield <= 0)
+        {
+            m_ActualLife = m_ActualLife - l_Damage;   
+        }
+        else
+        {
+            m_Shield = m_Shield - l_Damage*0.75f;
+            if(m_Shield < 0)
+            {
+                m_Shield = 0;
+            }
+            m_ActualLife = m_ActualLife - l_Damage*0.25f;
+        }
+
+        
     }
 }
 

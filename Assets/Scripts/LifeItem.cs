@@ -2,17 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AmoItem : Item
+public class LifeItem : Item
 {
-    public int m_AmmoCount;
+    public int m_LifeCount;
     public override bool CanPick()
     {
-        return GameController.GetGameController().m_Player.CanPickAmmo();
+        return GameController.GetGameController().m_Player.CanPickLife();
     }
     public override void Pick()
     {
-        GameController.GetGameController().m_Player.AddAmmo(m_AmmoCount);
+        GameController.GetGameController().m_Player.AddLife(m_LifeCount);
         GameObject.Destroy(gameObject);   
     }
-    
 }
