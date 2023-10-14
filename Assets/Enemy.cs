@@ -19,11 +19,11 @@ public class Enemy : MonoBehaviour
     TState m_State;
     public float m_MinDistanceToAttack;
     public List<Transform> m_PatrolPoistions;
-    int m_CurrentPatrolPosition;
+    int m_CurrentPatrolPosition = 0;
     public float m_MaxDistanceToHear;
     public float m_MaxDistanceToSee;
     public LayerMask m_SeesPlayerLayerMask;
-    float m_VisionConeAngle;
+    public float m_VisionConeAngle;
 
 
     void Awake()
@@ -145,12 +145,13 @@ public class Enemy : MonoBehaviour
         if(m_CurrentPatrolPosition>m_PatrolPoistions.Count)
         {
             m_CurrentPatrolPosition = 0;
-            MoveToNextPatrolPosition();
         }
+        MoveToNextPatrolPosition();
     }
     void MoveToNextPatrolPosition()
     {
         m_NavMeshAgent.SetDestination(m_PatrolPoistions[m_CurrentPatrolPosition].position);
+        UpdatePatrolState();
     }
     bool HearPlayer()
     {

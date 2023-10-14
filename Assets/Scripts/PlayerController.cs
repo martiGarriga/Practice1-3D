@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
 
     CharacterController m_CharacterController;
 
+    int points =0;
+    Puntuation PointsController;
+
     [Header("Shoot")]
     public float m_MaxShootDist;
     public LayerMask m_layerMask;
@@ -81,6 +84,8 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
+        PointsController = GetComponent<Puntuation>();
+
         m_ActualLife = m_MAX_Life;
         m_Shield = m_MAX_Shield;
         m_AmmoRemaining = m_CHARGERCAPACITY;
@@ -210,19 +215,27 @@ public class PlayerController : MonoBehaviour
         m_LastTimeOnFloor += Time.deltaTime;
         if (CanJump())
             m_LastTimeOnFloor = 0.0f;
-
-        print(timer);
     }
     void Shoot()
-    {
-
+    { 
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value) && m_AmmoRemaining > 0)
         {
-            SetShootWeaponAnimation();
-            CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
-            BulletShooted();
+            if(m_layerMask == 7)
+            {
+                points=PointsController.PlusPoints(points);
+                SetShootWeaponAnimation();
+                CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
+                BulletShooted();
+            }
+            else
+            {
+                SetShootWeaponAnimation();
+                CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
+                BulletShooted();
+            }
+            
         }
         else
         {

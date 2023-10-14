@@ -2,9 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TargetShootingGallery : MonoBehaviour
+public class Puntuation : MonoBehaviour
 {
-    public Animation m_MoveTarget;
     // Start is called before the first frame update
     void Start()
     {
@@ -15,5 +14,10 @@ public class TargetShootingGallery : MonoBehaviour
     void Update()
     {
         
+    }
+
+    public int PlusPoints(int points)
+    {
+        return points + 100;
     }
 }
