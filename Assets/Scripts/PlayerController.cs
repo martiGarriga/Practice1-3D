@@ -24,8 +24,8 @@ public class PlayerController : MonoBehaviour
     public float m_MaxShootDist;
     public LayerMask m_layerMask;
     public GameObject m_HitPatriclePrefab;
-    public Collider m_EnemyCollider;
-    public EnemyTarget m_EnemyTarget;
+   
+    
 
     [Header("Input")]
     public KeyCode m_LeftKeyCode = KeyCode.A;
@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        m_EnemyTarget = GetComponent<EnemyTarget>();
+        
 
         m_ActualLife = m_MAX_Life;
         m_Shield = m_MAX_Shield;
@@ -220,18 +220,17 @@ public class PlayerController : MonoBehaviour
     }
     void Shoot()
     {
-
-        
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value) && m_AmmoRemaining > 0)
         {
-            if(l_RaycastHit.collider == m_EnemyCollider)
+            if(l_RaycastHit.transform.tag == "PracticeEnemy")
             {
                 SetShootWeaponAnimation();
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
-                m_EnemyTarget.HitByPlayer();//problema aquí
+                EnemyTarget l_EnemyTarget = l_RaycastHit.transform.gameObject.GetComponent<EnemyTarget>();
+                l_EnemyTarget.HitByPlayer();
                 m_points = m_points + 50;
             }
             else
