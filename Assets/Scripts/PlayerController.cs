@@ -18,13 +18,14 @@ public class PlayerController : MonoBehaviour
 
     CharacterController m_CharacterController;
 
-    int points =0;
-    Puntuation PointsController;
+    int m_points = 0;
 
     [Header("Shoot")]
     public float m_MaxShootDist;
     public LayerMask m_layerMask;
     public GameObject m_HitPatriclePrefab;
+    public Collider m_EnemyCollider;
+    public EnemyTarget m_EnemyTarget;
 
     [Header("Input")]
     public KeyCode m_LeftKeyCode = KeyCode.A;
@@ -81,10 +82,11 @@ public class PlayerController : MonoBehaviour
     [Header("UI Player")]
     public Text m_AmmoDisplay;
     public Text m_TotalAmmoDisplay;
+    public Text m_PointsText;
 
     private void Awake()
     {
-        PointsController = GetComponent<Puntuation>();
+        m_EnemyTarget = GetComponent<EnemyTarget>();
 
         m_ActualLife = m_MAX_Life;
         m_Shield = m_MAX_Shield;
@@ -116,7 +118,6 @@ public class PlayerController : MonoBehaviour
         //#else
 
         //#endif
-
         Cursor.lockState = CursorLockMode.Locked;
         SetIdWeaponAnimation();
         
@@ -140,6 +141,7 @@ public class PlayerController : MonoBehaviour
 #endif
         m_AmmoDisplay.text = m_AmmoRemaining.ToString();
         m_TotalAmmoDisplay.text = m_TotalAmmo.ToString();
+        m_PointsText.text = m_points.ToString();
 
         timer = timer + Time.deltaTime;
 
@@ -217,17 +219,20 @@ public class PlayerController : MonoBehaviour
             m_LastTimeOnFloor = 0.0f;
     }
     void Shoot()
-    { 
+    {
+
+        
         Ray l_Ray = m_Camera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0.0f));
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value) && m_AmmoRemaining > 0)
         {
-            if(m_layerMask == 7)
+            if(l_RaycastHit.collider == m_EnemyCollider)
             {
-                points=PointsController.PlusPoints(points);
                 SetShootWeaponAnimation();
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
+                m_EnemyTarget.HitByPlayer();//problema aquí
+                m_points = m_points + 50;
             }
             else
             {

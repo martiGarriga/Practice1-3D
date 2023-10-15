@@ -5,16 +5,14 @@ using UnityEngine;
 public class EnemyTarget : MonoBehaviour
 {
     public float m_LifeEnemy;
-    bool m_RecibedDamage;
-
+    Animation DisapearEnemy;
     private void Start()
     {
-        
+        DisapearEnemy = GetComponent<Animation>();
     }
-
-    private void Update()
+    public void HitByPlayer()
     {
-        if (m_RecibedDamage)
-            m_LifeEnemy--;
+        DisapearEnemy.Play();
+        gameObject.SetActive(false);
     }
 }
