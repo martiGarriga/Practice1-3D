@@ -1,7 +1,9 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Events;
 
 public class PlayerController : MonoBehaviour
 {
@@ -25,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public float m_MaxShootDist;
     public LayerMask m_layerMask;
     public GameObject m_HitPatriclePrefab;
+    public static Action OnRestart;
    
     
 
@@ -85,6 +88,16 @@ public class PlayerController : MonoBehaviour
     public Text m_TotalAmmoDisplay;
     public Text m_PointsText;
 
+    private void OnEnable()
+    {
+        ShootingGalery.OnTimeOut += RestartPoints;
+
+    }
+    private void OnDisable()
+    {
+        ShootingGalery.OnTimeOut -= RestartPoints; 
+
+    }
     private void Awake()
     {
         
@@ -232,8 +245,16 @@ public class PlayerController : MonoBehaviour
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
                 EnemyTarget l_EnemyTarget = l_RaycastHit.transform.gameObject.GetComponent<EnemyTarget>();
-                l_EnemyTarget.HitByPlayer();
+                l_EnemyTarget.DefusePractice();
                 m_points = m_Puntuation.PlusPoints(m_points);
+            }
+            else if(l_RaycastHit.transform.tag == "Box")
+            {
+                SetShootWeaponAnimation();
+                CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
+                BulletShooted();
+                OnRestart?.Invoke();
+                m_points = 0;
             }
             else
             {
@@ -241,6 +262,7 @@ public class PlayerController : MonoBehaviour
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
             }
+
             
         }
         else
@@ -396,6 +418,10 @@ public class PlayerController : MonoBehaviour
         if(m_AmmoRemaining>0)
             m_AmmoRemaining--;
 
+    }
+    void RestartPoints()
+    {
+        m_points = 0;
     }
     public void UpdateLife(float l_Life, float l_Shield)
     {
