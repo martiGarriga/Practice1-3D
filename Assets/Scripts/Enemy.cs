@@ -102,8 +102,7 @@ public class Enemy : MonoBehaviour
     }
     void UpdatePatrolState()
     {
-        SetPatrolState();
-        if(m_NavMeshAgent.hasPath && m_NavMeshAgent.pathStatus == NavMeshPathStatus.PathComplete)
+        if(!m_NavMeshAgent.hasPath && !m_NavMeshAgent.pathPending)
         {
             MoveNextPatrol();
         }
@@ -141,8 +140,8 @@ public class Enemy : MonoBehaviour
     }
     void MoveNextPatrol()
     {
-        ++m_CurrentPatrolPosition;
-        if(m_CurrentPatrolPosition>m_PatrolPoistions.Count)
+        m_CurrentPatrolPosition++;
+        if(m_CurrentPatrolPosition>=m_PatrolPoistions.Count)
         {
             m_CurrentPatrolPosition = 0;
         }

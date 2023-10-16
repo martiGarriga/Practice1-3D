@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Puntuation : MonoBehaviour
 {
-
     public int PlusPoints(int points)
     {
-        return points = points + 100;
+        return points + 100;
     }
 }

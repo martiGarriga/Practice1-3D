@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour
     CharacterController m_CharacterController;
 
     int m_points = 0;
+    private Puntuation m_Puntuation;
 
     [Header("Shoot")]
     public float m_MaxShootDist;
@@ -118,6 +119,7 @@ public class PlayerController : MonoBehaviour
         //#else
 
         //#endif
+        m_Puntuation = GetComponent<Puntuation>();
         Cursor.lockState = CursorLockMode.Locked;
         SetIdWeaponAnimation();
         
@@ -231,7 +233,7 @@ public class PlayerController : MonoBehaviour
                 BulletShooted();
                 EnemyTarget l_EnemyTarget = l_RaycastHit.transform.gameObject.GetComponent<EnemyTarget>();
                 l_EnemyTarget.HitByPlayer();
-                m_points = m_points + 50;
+                m_points = m_Puntuation.PlusPoints(m_points);
             }
             else
             {
