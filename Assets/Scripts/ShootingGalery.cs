@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShootingGalery : MonoBehaviour
 {
-    bool m_IsNear = false;
+
     bool m_Activated = false;
     public GameObject m_Points;
     public float m_MaxDistance;
@@ -33,13 +33,11 @@ public class ShootingGalery : MonoBehaviour
         if(l_Distance<=m_MaxDistance)
         {
             m_Points.SetActive(true);
-            m_IsNear = true;
             m_Activated = true;
         }
         else
         {
             m_Points.SetActive(false);
-            m_IsNear = false;
             m_Activated = false;
         }
     }
