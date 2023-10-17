@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
 
     CharacterController m_CharacterController;
 
-    int m_points = 0;
     private Puntuation m_Puntuation;
 
     [Header("Shoot")]
@@ -86,18 +85,9 @@ public class PlayerController : MonoBehaviour
     [Header("UI Player")]
     public Text m_AmmoDisplay;
     public Text m_TotalAmmoDisplay;
-    public Text m_PointsText;
+    public Text m_LifeDisplay;
+    public Text m_ShieldDisplay;
 
-    private void OnEnable()
-    {
-        ShootingGalery.OnTimeOut += RestartPoints;
-
-    }
-    private void OnDisable()
-    {
-        ShootingGalery.OnTimeOut -= RestartPoints; 
-
-    }
     private void Awake()
     {
         
@@ -156,7 +146,8 @@ public class PlayerController : MonoBehaviour
 #endif
         m_AmmoDisplay.text = m_AmmoRemaining.ToString();
         m_TotalAmmoDisplay.text = m_TotalAmmo.ToString();
-        m_PointsText.text = m_points.ToString();
+        m_LifeDisplay.text = m_ActualLife.ToString();
+        m_ShieldDisplay.text = m_Shield.ToString();
 
         timer = timer + Time.deltaTime;
 
@@ -246,7 +237,7 @@ public class PlayerController : MonoBehaviour
                 BulletShooted();
                 EnemyTarget l_EnemyTarget = l_RaycastHit.transform.gameObject.GetComponent<EnemyTarget>();
                 l_EnemyTarget.DefusePractice();
-                m_points = m_Puntuation.PlusPoints(m_points);
+                m_Puntuation.PlusPoints();
             }
             else if(l_RaycastHit.transform.tag == "Box")
             {
@@ -254,7 +245,7 @@ public class PlayerController : MonoBehaviour
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
                 OnRestart?.Invoke();
-                m_points = 0;
+                m_Puntuation.RestartPoints();
             }
             else
             {
@@ -418,10 +409,6 @@ public class PlayerController : MonoBehaviour
         if(m_AmmoRemaining>0)
             m_AmmoRemaining--;
 
-    }
-    void RestartPoints()
-    {
-        m_points = 0;
     }
     public void UpdateLife(float l_Life, float l_Shield)
     {
