@@ -103,15 +103,15 @@ public class Enemy : MonoBehaviour
     void UpdateIdleState()
     {
         print("Idle/Patrol");
-        SetPatrolState();
+        CheckPatrol();
     }
     void UpdatePatrolState()
     {
         print("patrol");
         if (HearPlayer())
             SetAlertState();
-        //else
-            //SetIdleState();
+        else
+            SetIdleState();
     }
     void UpdateChaseState()
     {
@@ -123,7 +123,6 @@ public class Enemy : MonoBehaviour
         if (l_Distance < m_MinDistanceToAttack)
         {
             SetAttackState();
-
         }
 
     }
@@ -214,6 +213,7 @@ public class Enemy : MonoBehaviour
     }
     void MoveToNextPatrolPosition()
     {
+        //m_NavMeshAgent.Stop(HearPlayer());
         m_NavMeshAgent.SetDestination(m_PatrolPoistions[m_CurrentPatrolPosition].position);
     }
     bool HearPlayer()
