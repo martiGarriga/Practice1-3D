@@ -22,11 +22,8 @@ public class Enemy : MonoBehaviour
     int m_CurrentPatrolPosition = 0;
     public float m_MaxDistanceToHear;
     public float m_MaxDistanceToSee;
-    public float m_MaxDistanceToChase;
     public LayerMask m_SeesPlayerLayerMask;
     public float m_VisionConeAngle;
-    float m_Rotation = 360;
-    float m_VelRoatación = 100;
 
 
     void Awake()
@@ -68,8 +65,7 @@ public class Enemy : MonoBehaviour
 
 
         }
-        //print(SeesPlayer());
-        //print(HearPlayer());
+        
     }
     void SetIdleState()
     {
@@ -102,30 +98,18 @@ public class Enemy : MonoBehaviour
 
     void UpdateIdleState()
     {
-        print("Idle/Patrol");
         SetPatrolState();
     }
     void UpdatePatrolState()
     {
-        print("patrol");
-        if (HearPlayer())
-            SetAlertState();
-        //else
-            //SetIdleState();
+        if(!m_NavMeshAgent.hasPath && !m_NavMeshAgent.pathPending)
+        {
+            MoveNextPatrol();
+        }
     }
     void UpdateChaseState()
     {
-        SetNextChasePosition();
-        print("Chase");
-        Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
-        Vector3 l_EnemyPosition = transform.position;
-        float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
-        if (l_Distance < m_MinDistanceToAttack)
-        {
-            SetAttackState();
-
-        }
-
+        SetChaseState();
     }
     void UpdateDieState()
     {
@@ -137,53 +121,11 @@ public class Enemy : MonoBehaviour
     }
     void UpdateAlertState()
     {
-        print("Alert");
-        Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
-        Vector3 l_EnemyPosition = transform.position;
-        float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
-        if (SeesPlayer())
-        {
-            if (l_Distance > m_MaxDistanceToChase)
-            {
-                SetChaseState();
-            }
-            else if (l_Distance <= m_MaxDistanceToChase)
-            {
-                SetAttackState();
-            }
-        }
-        else
-            RotationAlert();
+        SetAlertState();
     }
     void UpdateAttackState()
     {
-        Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
-        Vector3 l_EnemyPosition = transform.position;
-        float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
-        print("Atack");
-        if(l_Distance <= m_MinDistanceToAttack)
-        {
-            ShootEnemy();
-        }
-        else
-        {
-            SetPatrolState();
-        }
-    }
-    void RotationAlert()
-    {
-        //Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
-        transform.Rotate(Vector3.up, m_VelRoatación * Time.deltaTime);
-        if (SeesPlayer())
-        {
-            SetAlertState();
-        }
-        else
-        {
-            SetIdleState();
-        }
-        //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(l_PlayerPosition), Time.deltaTime * m_VelRoatación)
-
+        SetAttackState();
     }
     void SetNextChasePosition()
     {
@@ -195,13 +137,6 @@ public class Enemy : MonoBehaviour
         Vector3 l_DesiredPosition = l_PlayerPosition +l_Direction* m_MinDistanceToAttack;
         m_NavMeshAgent.SetDestination(l_DesiredPosition);
 
-    }
-    void CheckPatrol()
-    {
-        if (!m_NavMeshAgent.hasPath && !m_NavMeshAgent.pathPending)
-        {
-            MoveNextPatrol();
-        }
     }
     void MoveNextPatrol()
     {
@@ -215,6 +150,7 @@ public class Enemy : MonoBehaviour
     void MoveToNextPatrolPosition()
     {
         m_NavMeshAgent.SetDestination(m_PatrolPoistions[m_CurrentPatrolPosition].position);
+        UpdatePatrolState();
     }
     bool HearPlayer()
     {
@@ -245,18 +181,5 @@ public class Enemy : MonoBehaviour
             }
         }
         return false;
-    }
-    void ShootEnemy()
-    {
-        Vector3 l_Origin = transform.position;
-        Vector3 l_Forward = transform.forward;
-        RaycastHit l_RaycastHit;
-        if(Physics.Raycast(l_Origin, l_Forward, out l_RaycastHit, m_MinDistanceToAttack))
-        {
-            if (l_RaycastHit.transform.tag == "Player")
-            {
-
-            }
-        }
     }
 }

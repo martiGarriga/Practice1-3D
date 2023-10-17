@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.UI;
 
 public class ShootingGalery : MonoBehaviour
 {
@@ -17,9 +16,6 @@ public class ShootingGalery : MonoBehaviour
     public float m_Timer;
     public static Action OnTimeOut;
 
-    public Text m_TimeHud;
-    public GameObject m_TimerActivate;
-
     private void OnEnable()
     {
         PlayerController.OnRestart += StartShooting;
@@ -30,7 +26,6 @@ public class ShootingGalery : MonoBehaviour
     }
     void Update()
     {
-        m_TimeHud.text = m_Timer.ToString();
         PlayerNear();
         
         if(m_Activated && m_PlayerNear)
@@ -54,14 +49,12 @@ public class ShootingGalery : MonoBehaviour
         if(l_Distance<=m_MaxDistance)
         {
             m_Points.SetActive(true);
-            m_TimerActivate.SetActive(true);
             m_PlayerNear = true;
             
         }
         else
         {
             m_Points.SetActive(false);
-            m_TimerActivate.SetActive(false);
             m_PlayerNear = false;
             m_Timer = 0.0f;
             m_Activated = false;
