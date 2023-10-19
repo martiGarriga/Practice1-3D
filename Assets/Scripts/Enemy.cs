@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class Enemy : MonoBehaviour
 {
@@ -27,16 +28,35 @@ public class Enemy : MonoBehaviour
     public float m_VisionConeAngle;
     float m_Rotation = 360;
     float m_VelRoatación = 100;
+    public int m_Life;
+    public int m_MaxLife =100;
+    Vector3 m_StartPosition;
+    Quaternion m_StartRotation;
 
+
+    [Header("LifeBar")]
+    public Transform m_LifeBarAnchor;
+    public RectTransform m_LifeBarBackGroundRectTransform;
+    public Image m_ImageLifeBar;
 
     void Awake()
     {
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
+        m_StartPosition = transform.position;
+        m_StartRotation = transform.rotation;
     }
     void Start()
     {
-
+        m_Life = m_MaxLife;
+        GameController.GetGameController().AddEnemy(this);
+        SetIdleState();
+        ShowMaxLife();
         
+    }
+    private void OnDestroy()
+    {
+        GameController.GetGameController().RemoveEnemy(this);
+
     }
 
     // Update is called once per frame
@@ -70,6 +90,7 @@ public class Enemy : MonoBehaviour
         }
         //print(SeesPlayer());
         //print(HearPlayer());
+        UpdateLifeBarPosition();
     }
     void SetIdleState()
     {
@@ -86,6 +107,7 @@ public class Enemy : MonoBehaviour
     void SetDieState()
     {
         m_State = TState.DIE;
+        gameObject.SetActive(false);
     }
     void SetHitState()
     {
@@ -258,5 +280,38 @@ public class Enemy : MonoBehaviour
 
             }
         }
+    }
+
+    public void Hit(int LifePoints)
+    {
+        m_Life-=LifePoints;
+        if (m_Life <= 0)
+        {
+            SetDieState();
+        }
+    }
+
+    public void RestartLevel()
+    {
+        gameObject.SetActive(true);
+        m_NavMeshAgent.isStopped = true;
+        m_NavMeshAgent.enabled = false;
+        transform.position = m_StartPosition;
+        transform.rotation = m_StartRotation;
+        m_NavMeshAgent.enabled = true;
+        m_Life = m_MaxLife;
+        SetIdleState();
+        ShowMaxLife();
+    }
+
+    void ShowMaxLife()
+    {
+        m_ImageLifeBar.fillAmount = m_Life / (float)m_MaxLife;
+    }
+    void UpdateLifeBarPosition()
+    {
+        Vector3 l_ViewportPosition = GameController.GetGameController().m_Player.m_Camera.WorldToViewportPoint(m_LifeBarAnchor.position);
+        m_LifeBarBackGroundRectTransform.anchoredPosition = new Vector3(l_ViewportPosition.x * Screen.width, -(Screen.height- l_ViewportPosition.y*Screen.height));
+        m_LifeBarBackGroundRectTransform.gameObject.SetActive(l_ViewportPosition.z >= 0.0f);
     }
 }

@@ -8,6 +8,7 @@ public class GameController : MonoBehaviour
     static GameController m_GameController=null;
     public GameObject m_DestroyObjects;
     public PlayerController m_Player;
+    List<Enemy> m_Enemies;
 
     static public GameController GetGameController()
     {
@@ -17,6 +18,7 @@ public class GameController : MonoBehaviour
             m_GameController = l_GameObject.AddComponent<GameController>();
             m_GameController.m_DestroyObjects=new GameObject("DestroyObjects");
             m_GameController.m_DestroyObjects.transform.SetParent(l_GameObject.transform);
+            m_GameController.m_Enemies = new List<Enemy>();
             GameController.DontDestroyOnLoad(l_GameObject);
         }
         return m_GameController;
@@ -24,6 +26,8 @@ public class GameController : MonoBehaviour
     public void RestartLevel()
     {
         m_Player.RestartLevel();
+        foreach (Enemy l_Enemy in m_Enemies)
+            l_Enemy.RestartLevel();
         DestroyLevelObjects();
     }
     public void GoToLevel1()
@@ -52,5 +56,13 @@ public class GameController : MonoBehaviour
             if(l_Transform!=m_DestroyObjects.transform)
                 GameObject.Destroy(l_Transform.gameObject);
         }
+    }
+    public void AddEnemy(Enemy _Enemy)
+    {
+        m_Enemies.Add(_Enemy);
+    }
+    public void RemoveEnemy(Enemy _Enemy)
+    {
+        m_Enemies.Remove(_Enemy);
     }
 }

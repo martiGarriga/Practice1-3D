@@ -247,6 +247,13 @@ public class PlayerController : MonoBehaviour
                 OnRestart?.Invoke();
                 m_Puntuation.RestartPoints();
             }
+            else if(l_RaycastHit.transform.tag == "Enemy")
+            {
+                SetShootWeaponAnimation();
+                CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
+                l_RaycastHit.collider.GetComponent<HitCollider>().Hit();
+                BulletShooted();
+            }
             else
             {
                 SetShootWeaponAnimation();
@@ -368,6 +375,10 @@ public class PlayerController : MonoBehaviour
             if(l_Item.CanPick())
                 l_Item.Pick();
         }
+        else if(other.tag == "DeadZone")
+        {
+            Kill();
+        }
     }
     public bool CanPickLife()
     {
@@ -432,6 +443,11 @@ public class PlayerController : MonoBehaviour
         }
 
         
+    }
+    public void Kill()
+    {
+        m_ActualLife = 0;
+        GameController.GetGameController().RestartLevel();
     }
 }
 
