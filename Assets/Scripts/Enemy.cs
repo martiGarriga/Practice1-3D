@@ -27,11 +27,15 @@ public class Enemy : MonoBehaviour
     public LayerMask m_SeesPlayerLayerMask;
     public float m_VisionConeAngle;
     //float m_Rotation = 360;
-    float m_VelRoatacion = 100;
+    float m_VelRoatacion = 150;
     public int m_Life;
     public int m_MaxLife =100;
     Vector3 m_StartPosition;
     Quaternion m_StartRotation;
+    int m_damageEnemy = 10;
+    public PlayerController m_LifePlayer;
+    public float m_EnemyCadence;
+    float timer = 0;
 
 
     [Header("LifeBar")]
@@ -91,6 +95,7 @@ public class Enemy : MonoBehaviour
         //print(SeesPlayer());
         //print(HearPlayer());
         UpdateLifeBarPosition();
+        timer = Time.deltaTime;
     }
     void SetIdleState()
     {
@@ -99,6 +104,7 @@ public class Enemy : MonoBehaviour
     void SetPatrolState()
     {
         m_State = TState.PATROL;
+        CheckPatrol();
     }
     void SetChaseState()
     {
@@ -116,6 +122,7 @@ public class Enemy : MonoBehaviour
     void SetAlertState()
     {
         m_State = TState.ALERT;
+        m_NavMeshAgent.isStopped = true;
     }
     void SetAttackState()
     {
@@ -125,7 +132,7 @@ public class Enemy : MonoBehaviour
     void UpdateIdleState()
     {
         print("Idle/Patrol");
-        CheckPatrol();
+        SetPatrolState();
     }
     void UpdatePatrolState()
     {
@@ -133,11 +140,10 @@ public class Enemy : MonoBehaviour
         if (HearPlayer())
             SetAlertState();
         else
-            SetIdleState();
+            SetPatrolState();
     }
     void UpdateChaseState()
     {
-        SetNextChasePosition();
         print("Chase");
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
@@ -146,6 +152,7 @@ public class Enemy : MonoBehaviour
         {
             SetAttackState();
         }
+        SetNextChasePosition();
 
     }
     void UpdateDieState()
@@ -182,26 +189,38 @@ public class Enemy : MonoBehaviour
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
         print("Atack");
-        if(l_Distance <= m_MinDistanceToAttack)
+        if(l_Distance <= m_MinDistanceToAttack && SeesPlayer())
         {
-            ShootEnemy();
+            if (timer >= m_EnemyCadence)
+                ShootPlayer();
+            else
+                SetAttackState();
         }
         else
         {
-            SetPatrolState();
+            SetChaseState();
         }
     }
     void RotationAlert()
     {
         //Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
+        Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
+        Vector3 l_EnemyPosition = transform.position;
+        float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
+        print(l_Distance);
         transform.Rotate(Vector3.up, m_VelRoatacion * Time.deltaTime);
-        if (SeesPlayer())
+        if (SeesPlayer() && l_Distance <= m_MinDistanceToAttack)
         {
-            SetAlertState();
+            SetAttackState();
+
+        }
+        else if(SeesPlayer() && l_Distance <= m_MaxDistanceToChase)
+        {
+            SetChaseState();
         }
         else
         {
-            SetIdleState();
+            SetPatrolState();
         }
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(l_PlayerPosition), Time.deltaTime * m_VelRoatación)
 
@@ -235,8 +254,9 @@ public class Enemy : MonoBehaviour
     }
     void MoveToNextPatrolPosition()
     {
-        m_NavMeshAgent.isStopped = true;
-        m_NavMeshAgent.Stop(HearPlayer());
+        if(HearPlayer())
+            m_NavMeshAgent.isStopped = true;
+
         m_NavMeshAgent.SetDestination(m_PatrolPoistions[m_CurrentPatrolPosition].position);
     }
     bool HearPlayer()
@@ -269,8 +289,9 @@ public class Enemy : MonoBehaviour
         }
         return false;
     }
-    void ShootEnemy()
+    void ShootPlayer()
     {
+        print("Shot");
         Vector3 l_Origin = transform.position;
         Vector3 l_Forward = transform.forward;
         RaycastHit l_RaycastHit;
@@ -278,7 +299,7 @@ public class Enemy : MonoBehaviour
         {
             if (l_RaycastHit.transform.tag == "Player")
             {
-
+                m_LifePlayer.TakeDamage(m_damageEnemy);
             }
         }
     }
