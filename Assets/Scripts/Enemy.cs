@@ -194,7 +194,7 @@ public class Enemy : MonoBehaviour
     void RotationAlert()
     {
         //Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
-        transform.Rotate(Vector3.up, m_VelRoatación * Time.deltaTime);
+        transform.Rotate(Vector3.up, m_VelRoatacion * Time.deltaTime);
         if (SeesPlayer())
         {
             SetAlertState();
