@@ -26,8 +26,8 @@ public class Enemy : MonoBehaviour
     public float m_MaxDistanceToChase;
     public LayerMask m_SeesPlayerLayerMask;
     public float m_VisionConeAngle;
-    float m_Rotation = 360;
-    float m_VelRoatación = 100;
+    //float m_Rotation = 360;
+    float m_VelRoatacion = 100;
     public int m_Life;
     public int m_MaxLife =100;
     Vector3 m_StartPosition;
@@ -235,7 +235,8 @@ public class Enemy : MonoBehaviour
     }
     void MoveToNextPatrolPosition()
     {
-        //m_NavMeshAgent.Stop(HearPlayer());
+        m_NavMeshAgent.isStopped = true;
+        m_NavMeshAgent.Stop(HearPlayer());
         m_NavMeshAgent.SetDestination(m_PatrolPoistions[m_CurrentPatrolPosition].position);
     }
     bool HearPlayer()

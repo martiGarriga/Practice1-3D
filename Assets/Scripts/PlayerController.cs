@@ -27,6 +27,7 @@ public class PlayerController : MonoBehaviour
     public LayerMask m_layerMask;
     public GameObject m_HitPatriclePrefab;
     public static Action OnRestart;
+    //CPoolElements m_PoolElements;
    
     
 
@@ -122,6 +123,7 @@ public class PlayerController : MonoBehaviour
         //#else
 
         //#endif
+        //m_PoolElements = new CPoolElements(20, m_HitPatriclePrefab, null);
         m_Puntuation = GetComponent<Puntuation>();
         Cursor.lockState = CursorLockMode.Locked;
         SetIdWeaponAnimation();
@@ -273,6 +275,7 @@ public class PlayerController : MonoBehaviour
     void CreateShootParticles(Vector3 Position, Vector3 Normal)
     {
         GameObject l_HitParticle = GameObject.Instantiate(m_HitPatriclePrefab, GameController.GetGameController().m_DestroyObjects.transform);
+        //GameObject l_HitParticles = m_PoolElements.GetNextElement();
         l_HitParticle.transform.position = Position;
         l_HitParticle.transform.rotation = Quaternion.LookRotation(Normal);
     }
