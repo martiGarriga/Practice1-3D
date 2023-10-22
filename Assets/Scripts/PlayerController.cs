@@ -232,11 +232,13 @@ public class PlayerController : MonoBehaviour
         RaycastHit l_RaycastHit;
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value) && m_AmmoRemaining > 0)
         {
+            FindObjectOfType<AudioManager>().Play("ShootWeapon");
             if(l_RaycastHit.transform.tag == "PracticeEnemy")
             {
                 SetShootWeaponAnimation();
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
+                FindObjectOfType<AudioManager>().Play("ImpactBullet");
                 EnemyTarget l_EnemyTarget = l_RaycastHit.transform.gameObject.GetComponent<EnemyTarget>();
                 l_EnemyTarget.DefusePractice();
                 m_Puntuation.PlusPoints();
@@ -246,6 +248,7 @@ public class PlayerController : MonoBehaviour
                 SetShootWeaponAnimation();
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 BulletShooted();
+                FindObjectOfType<AudioManager>().Play("ImpactBullet");
                 OnRestart?.Invoke();
                 m_Puntuation.RestartPoints();
             }
@@ -255,6 +258,7 @@ public class PlayerController : MonoBehaviour
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 l_RaycastHit.collider.GetComponent<HitCollider>().Hit();
                 BulletShooted();
+                FindObjectOfType<AudioManager>().Play("ImpactBullet");
             }
             else
             {
@@ -267,9 +271,13 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            if(m_AmmoRemaining>0)
+            if (m_AmmoRemaining > 0)
+            {
                 m_AmmoRemaining--;
-            SetShootWeaponAnimation();
+                FindObjectOfType<AudioManager>().Play("ShootWeapon");
+                SetShootWeaponAnimation();
+
+            }
         }
     }
     void CreateShootParticles(Vector3 Position, Vector3 Normal)
@@ -286,6 +294,7 @@ public class PlayerController : MonoBehaviour
     void Reload()
     {
         SetReloadWeaponAnimation();
+        FindObjectOfType<AudioManager>().Play("ReloadWeapon");
         float l_nextCharger = m_CHARGERCAPACITY - m_AmmoRemaining;
         if (l_nextCharger > m_TotalAmmo)
         {

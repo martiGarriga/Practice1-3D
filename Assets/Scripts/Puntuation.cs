@@ -5,7 +5,8 @@ using UnityEngine.UI;
 
 public class Puntuation : MonoBehaviour
 {
-    private int m_points = 0;
+    [HideInInspector]
+    public int m_points = 0;
 
     public Text m_PointsText;
     private void OnEnable()
