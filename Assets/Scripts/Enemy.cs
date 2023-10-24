@@ -35,7 +35,7 @@ public class Enemy : MonoBehaviour
     Quaternion m_StartRotation;
     int m_damageEnemy = 10;
     public float m_EnemyCadence;
-    public float timer = 0.0f;
+    float timer = 0.0f;
 
 
     [Header("LifeBar")]
@@ -95,6 +95,10 @@ public class Enemy : MonoBehaviour
         //print(SeesPlayer());
         //print(HearPlayer());
         UpdateLifeBarPosition();
+         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
+        Vector3 l_EnemyPosition = transform.position;
+        float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
+        print(l_Distance);
         
     }
     void SetIdleState()
@@ -133,34 +137,34 @@ public class Enemy : MonoBehaviour
 
     void UpdateIdleState()
     {
-        print("Idle/Patrol");
+        //print("Idle/Patrol");
         SetPatrolState();
     }
     void UpdatePatrolState()
     {
-        print("patrol");
+        //print("patrol");
         CheckPatrol();
-        if (HearPlayer())
+        if(HearPlayer())
             SetAlertState();
         
     }
     void UpdateChaseState()
     {
-        print("Chase");
+        //print("Chase");
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
         transform.LookAt(l_PlayerPosition);
-        //transform.position = Vector3.MoveTowards(transform.position, l_PlayerPosition, m_Velocity*Time.deltaTime);
         SetNextChasePosition();
         if (l_Distance < m_MinDistanceToAttack)
         {
             SetAttackState();
         }
-        if(l_Distance > m_MaxDistanceToChase)
+        if (l_Distance >= m_MaxDistanceToChase)
         {
-            SetAlertState();
+            SetPatrolState();
         }
+        
         
 
     }
@@ -174,20 +178,17 @@ public class Enemy : MonoBehaviour
     }
     void UpdateAlertState()
     {
-        print("Alert");
+        //print("Alert");
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
-        if (SeesPlayer())
+        if (SeesPlayer() && l_Distance > m_MaxDistanceToChase)
+        { 
+            SetChaseState();   
+        }
+        else if (SeesPlayer() && l_Distance <= m_MaxDistanceToChase)
         {
-            if (l_Distance > m_MaxDistanceToChase)
-            {
-                SetChaseState();
-            }
-            else if (l_Distance <= m_MaxDistanceToChase)
-            {
-                SetAttackState();
-            }
+            SetAttackState();
         }
         else
             RotationAlert();
@@ -198,7 +199,7 @@ public class Enemy : MonoBehaviour
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
         transform.LookAt(l_PlayerPosition);
-        print("Atack");
+        //print("Atack");
         timer += Time.deltaTime;
         if(l_Distance < m_MinDistanceToAttack && SeesPlayer())
         {
@@ -219,7 +220,6 @@ public class Enemy : MonoBehaviour
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
-        print(l_Distance);
         transform.Rotate(Vector3.up, m_VelRoatacion * Time.deltaTime);
         if (SeesPlayer() && l_Distance <= m_MinDistanceToAttack)
         {
@@ -267,7 +267,10 @@ public class Enemy : MonoBehaviour
     void MoveToNextPatrolPosition()
     {
         if(HearPlayer())
+        {
             m_NavMeshAgent.isStopped = true;
+            SetAlertState();
+        }
 
         m_NavMeshAgent.SetDestination(m_PatrolPoistions[m_CurrentPatrolPosition].position);
     }
@@ -276,7 +279,7 @@ public class Enemy : MonoBehaviour
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition,l_EnemyPosition);
-        return l_Distance < m_MaxDistanceToHear;
+        return l_Distance <= m_MaxDistanceToHear;
     }
     bool SeesPlayer()
     {
@@ -310,7 +313,6 @@ public class Enemy : MonoBehaviour
         {
             PlayerController l_PlayerController = GameController.GetGameController().m_Player.GetComponent<PlayerController>();
             l_PlayerController.TakeDamage(m_damageEnemy);
-            print("Shot");
             
         }
     }
