@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.UI;
+using TMPro;
 
 public class Enemy : MonoBehaviour
 {
@@ -18,6 +19,7 @@ public class Enemy : MonoBehaviour
         ATTACK
     }
     TState m_State;
+    TState m_LastState;
     public float m_MinDistanceToAttack;
     public List<Transform> m_PatrolPoistions;
     int m_CurrentPatrolPosition = 0;
@@ -30,12 +32,14 @@ public class Enemy : MonoBehaviour
     float m_VelRoatacion = 150;
     public int m_Life;
     public int m_MaxLife =100;
-    public float m_Velocity;
     Vector3 m_StartPosition;
     Quaternion m_StartRotation;
     int m_damageEnemy = 10;
     public float m_EnemyCadence;
     float timer = 0.0f;
+
+    public List<GameObject> m_DroppingItems;
+
 
 
     [Header("LifeBar")]
@@ -118,10 +122,10 @@ public class Enemy : MonoBehaviour
     void SetDieState()
     {
         m_State = TState.DIE;
-        gameObject.SetActive(false);
     }
     void SetHitState()
     {
+        m_LastState = m_State;
         m_State = TState.HIT;
     }
     void SetAlertState()
@@ -170,11 +174,34 @@ public class Enemy : MonoBehaviour
     }
     void UpdateDieState()
     {
-        SetDieState();
+        m_NavMeshAgent.isStopped = true;
+        Instantiate(m_DroppingItems[Random.Range(0,m_DroppingItems.Count)], transform.position, Quaternion.identity);
+
+        gameObject.SetActive(false);
     }
     void UpdateHitState()
     {
-        SetHitState();
+       switch(m_LastState)
+       {
+            case TState.IDLE:
+                SetAlertState();
+                break;
+            case TState.PATROL:
+                SetAlertState();
+                break;    
+            case TState.ALERT:
+                SetAlertState();
+                break; 
+            case TState.CHASE:
+                SetChaseState();
+                break;       
+            case TState.ATTACK:
+                SetAttackState();
+                break;
+            case TState.DIE:
+                SetDieState();
+                break;            
+       }   
     }
     void UpdateAlertState()
     {
@@ -324,6 +351,11 @@ public class Enemy : MonoBehaviour
         {
             SetDieState();
         }
+        else
+        {
+            SetHitState();
+        }
+        
     }
 
     public void RestartLevel()
