@@ -442,7 +442,9 @@ public class PlayerController : MonoBehaviour
     {
         if(m_Shield <= 0)
         {
-            m_ActualLife = m_ActualLife - l_Damage;   
+            m_ActualLife = m_ActualLife - l_Damage;
+            if (m_ActualLife <= 0)
+                Kill();
         }
         else
         {
@@ -452,6 +454,8 @@ public class PlayerController : MonoBehaviour
                 m_Shield = 0;
             }
             m_ActualLife = m_ActualLife - l_Damage*0.25f;
+            if (m_ActualLife <= 0)
+                Kill();
         }
 
         
