@@ -348,6 +348,7 @@ public class PlayerController : MonoBehaviour
         transform.rotation = m_StartRotation;
         m_Yaw=transform.rotation.eulerAngles.y;
         m_Pitch= 0.0f;
+        m_ActualLife = 100f;
         m_CharacterController.enabled=true;
         
     }
