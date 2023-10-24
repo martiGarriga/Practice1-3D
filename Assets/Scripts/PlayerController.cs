@@ -28,8 +28,16 @@ public class PlayerController : MonoBehaviour
     public GameObject m_HitPatriclePrefab;
     public static Action OnRestart;
     //CPoolElements m_PoolElements;
-   
-    
+
+    [Header("Particles")]
+    bool m_IsEnemy;
+    public GameObject m_EnemyParticle;
+    public GameObject m_ShootParticle;
+    public GameObject m_ImpactParticle;
+    private ParticleSystem m_Shoot;
+    private ParticleSystem m_Impact;
+    private ParticleSystem m_EnemyImpact;
+
 
     [Header("Input")]
     public KeyCode m_LeftKeyCode = KeyCode.A;
@@ -233,7 +241,8 @@ public class PlayerController : MonoBehaviour
         if (Physics.Raycast(l_Ray, out l_RaycastHit, m_MaxShootDist, m_layerMask.value) && m_AmmoRemaining > 0)
         {
             FindObjectOfType<AudioManager>().Play("ShootWeapon");
-            if(l_RaycastHit.transform.tag == "PracticeEnemy")
+            m_Shoot.Play();
+            if (l_RaycastHit.transform.tag == "PracticeEnemy")
             {
                 SetShootWeaponAnimation();
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
@@ -242,6 +251,7 @@ public class PlayerController : MonoBehaviour
                 EnemyTarget l_EnemyTarget = l_RaycastHit.transform.gameObject.GetComponent<EnemyTarget>();
                 l_EnemyTarget.DefusePractice();
                 m_Puntuation.PlusPoints();
+                m_Impact.Play();
             }
             else if(l_RaycastHit.transform.tag == "Box")
             {
@@ -251,14 +261,17 @@ public class PlayerController : MonoBehaviour
                 FindObjectOfType<AudioManager>().Play("ImpactBullet");
                 OnRestart?.Invoke();
                 m_Puntuation.RestartPoints();
+                m_Impact.Play();
             }
             else if(l_RaycastHit.transform.tag == "Enemy")
             {
+                m_IsEnemy = true;
                 SetShootWeaponAnimation();
                 CreateShootParticles(l_RaycastHit.point, l_RaycastHit.normal);
                 l_RaycastHit.collider.GetComponent<HitCollider>().Hit();
                 BulletShooted();
                 FindObjectOfType<AudioManager>().Play("ImpactBullet");
+                m_EnemyImpact.Play();
             }
             else
             {
@@ -283,9 +296,22 @@ public class PlayerController : MonoBehaviour
     void CreateShootParticles(Vector3 Position, Vector3 Normal)
     {
         GameObject l_HitParticle = GameObject.Instantiate(m_HitPatriclePrefab, GameController.GetGameController().m_DestroyObjects.transform);
+        if (m_IsEnemy)
+        {
+            GameObject l_ImpactParticle = GameObject.Instantiate(m_EnemyParticle);
+            l_ImpactParticle.transform.position = Position;
+            l_ImpactParticle.transform.rotation = Quaternion.LookRotation(Normal);
+        }
+        else
+        {
+            GameObject l_ImpactParticle = GameObject.Instantiate(m_ImpactParticle);
+            l_ImpactParticle.transform.position = Position;
+            l_ImpactParticle.transform.rotation = Quaternion.LookRotation(Normal);
+        }
         //GameObject l_HitParticles = m_PoolElements.GetNextElement();
         l_HitParticle.transform.position = Position;
         l_HitParticle.transform.rotation = Quaternion.LookRotation(Normal);
+        m_IsEnemy = false;
     }
     private bool CanJump()
     {
