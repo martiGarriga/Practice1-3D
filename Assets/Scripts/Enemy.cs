@@ -99,13 +99,7 @@ public class Enemy : MonoBehaviour
 
 
         }
-        //print(SeesPlayer());
-        //print(HearPlayer());
-        UpdateLifeBarPosition();
-         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
-        Vector3 l_EnemyPosition = transform.position;
-        float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
-        print(l_Distance);
+        
 
         m_Image.fillAmount = m_Life;
     }
@@ -159,7 +153,7 @@ public class Enemy : MonoBehaviour
     }
     void UpdateChaseState()
     {
-        //print("Chase");
+        print("Chase");
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
@@ -209,7 +203,7 @@ public class Enemy : MonoBehaviour
     }
     void UpdateAlertState()
     {
-        //print("Alert");
+        print("Alert");
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
