@@ -226,9 +226,10 @@ GameObject:
   - component: {fileID: 1391412280867545805}
   - component: {fileID: 1391412280867545804}
   - component: {fileID: 1391412280867545807}
+  - component: {fileID: 1391412279217570435}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -269,13 +270,11 @@ MonoBehaviour:
   m_PitchSpeedInverted: 1
   m_MaxPitch: 60
   m_MInPitch: -80
-  m_MaxShootDist: 20
+  m_MaxShootDist: 30
   m_layerMask:
     serializedVersion: 2
     m_Bits: 183
   m_HitPatriclePrefab: {fileID: 9119652909250766746, guid: 28285c65b2a98b64d816e3e5c1e7f9e3, type: 3}
-  m_EnemyCollider: {fileID: 0}
-  m_EnemyTarget: {fileID: 0}
   m_LeftKeyCode: 97
   m_BackKeyCode: 115
   m_RightKeyCode: 100
@@ -297,12 +296,13 @@ MonoBehaviour:
   m_Camera: {fileID: 1391412279899615218}
   m_TotalAmmo: 200
   m_CHARGERCAPACITY: 20
-  m_Cadence: 0.75
+  m_Cadence: 0.5
   m_MAX_Life: 200
   m_MAX_Shield: 100
   m_AmmoDisplay: {fileID: 0}
   m_TotalAmmoDisplay: {fileID: 0}
-  m_PointsText: {fileID: 0}
+  m_LifeDisplay: {fileID: 0}
+  m_ShieldDisplay: {fileID: 0}
 --- !u!143 &1391412280867545807
 CharacterController:
   m_ObjectHideFlags: 0
@@ -321,6 +321,20 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &1391412279217570435
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1391412280867545802}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 63fa48aeba1104d4e88b2cb73368403e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_points: 0
+  m_PointsText: {fileID: 0}
 --- !u!1001 &1391412280105240750
 PrefabInstance:
   m_ObjectHideFlags: 0

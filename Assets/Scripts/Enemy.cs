@@ -122,6 +122,7 @@ public class Enemy : MonoBehaviour
     void SetDieState()
     {
         m_State = TState.DIE;
+        m_NavMeshAgent.isStopped = true;
     }
     void SetHitState()
     {
@@ -174,7 +175,6 @@ public class Enemy : MonoBehaviour
     }
     void UpdateDieState()
     {
-        m_NavMeshAgent.isStopped = true;
         Instantiate(m_DroppingItems[Random.Range(0,m_DroppingItems.Count)], transform.position, Quaternion.identity);
 
         gameObject.SetActive(false);
