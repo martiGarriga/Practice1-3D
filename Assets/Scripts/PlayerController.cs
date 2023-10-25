@@ -22,6 +22,9 @@ public class PlayerController : MonoBehaviour
 
     private Puntuation m_Puntuation;
 
+    [HideInInspector]
+    public bool m_HaveKey = false;
+
     [Header("Shoot")]
     public float m_MaxShootDist;
     public LayerMask m_layerMask;
@@ -253,7 +256,7 @@ public class PlayerController : MonoBehaviour
                 l_EnemyTarget.DefusePractice();
                 m_Puntuation.PlusPoints();
             }
-            else if(l_RaycastHit.transform.tag == "Box")
+            else if (l_RaycastHit.transform.tag == "Box")
             {
                 m_IsEnemy = false;
                 SetShootWeaponAnimation();
@@ -263,7 +266,7 @@ public class PlayerController : MonoBehaviour
                 OnRestart?.Invoke();
                 m_Puntuation.RestartPoints();
             }
-            else if(l_RaycastHit.transform.tag == "Enemy")
+            else if (l_RaycastHit.transform.tag == "Enemy")
             {
                 m_IsEnemy = true;
                 SetShootWeaponAnimation();
@@ -416,6 +419,11 @@ public class PlayerController : MonoBehaviour
             Item l_Item=other.GetComponent<Item>();
             if(l_Item.CanPick())
                 l_Item.Pick();
+        }
+        else if (other.tag == "Key")
+        {
+            m_HaveKey = true;
+
         }
         else if(other.tag == "DeadZone")
         {
