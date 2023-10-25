@@ -20,6 +20,7 @@ public class GoNextLevel : MonoBehaviour
         if(other.tag == "Player")
         {
             SceneManager.LoadSceneAsync("Level2Scene");
+            //GameController.GetGameController().GoToLevel2();
         }
     }
     public void ActivateAnimationDoor()

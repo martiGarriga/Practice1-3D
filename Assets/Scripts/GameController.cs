@@ -9,10 +9,11 @@ public class GameController : MonoBehaviour
     public GameObject m_DestroyObjects;
     public PlayerController m_Player;
     List<Enemy> m_Enemies;
+    static bool m_AlreadyInititated = false;
 
     static public GameController GetGameController()
     {
-        if(m_GameController == null)
+        if(m_GameController == null&& !m_AlreadyInititated)
         {
             GameObject l_GameObject = new GameObject("GameController");
             m_GameController = l_GameObject.AddComponent<GameController>();
@@ -20,6 +21,7 @@ public class GameController : MonoBehaviour
             m_GameController.m_DestroyObjects.transform.SetParent(l_GameObject.transform);
             m_GameController.m_Enemies = new List<Enemy>();
             GameController.DontDestroyOnLoad(l_GameObject);
+            m_AlreadyInititated = true;
         }
         return m_GameController;
     }

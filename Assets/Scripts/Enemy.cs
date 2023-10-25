@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour
     public int m_Life;
     public int m_MaxLife =100;
     Vector3 m_StartPosition;
+    Vector3 m_EnemyForward;
     Quaternion m_StartRotation;
     int m_damageEnemy = 10;
     public float m_EnemyCadence;
@@ -129,6 +130,7 @@ public class Enemy : MonoBehaviour
     }
     void SetAlertState()
     {
+        m_EnemyForward = transform.forward;
         m_State = TState.ALERT;
         m_NavMeshAgent.isStopped = true;
     }
@@ -146,9 +148,10 @@ public class Enemy : MonoBehaviour
     void UpdatePatrolState()
     {
         //print("patrol");
-        CheckPatrol();
         if(HearPlayer())
             SetAlertState();
+        CheckPatrol();
+    
         
     }
     void UpdateChaseState()
@@ -217,6 +220,7 @@ public class Enemy : MonoBehaviour
         }
         else
             RotationAlert();
+            print("Rota");
     }
     void UpdateAttackState()
     {
@@ -244,6 +248,9 @@ public class Enemy : MonoBehaviour
         //Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_PlayerPosition = GameController.GetGameController().m_Player.transform.position;
         Vector3 l_EnemyPosition = transform.position;
+        Vector3 l_EnemyForward = transform.forward;
+        float l_Angle = Vector3.Angle(m_EnemyForward, l_EnemyForward);
+        print(l_Angle);
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
         transform.Rotate(Vector3.up, m_VelRoatacion * Time.deltaTime);
         if (SeesPlayer() && l_Distance <= m_MinDistanceToAttack)
@@ -255,9 +262,10 @@ public class Enemy : MonoBehaviour
         {
             SetChaseState();
         }
-        else
+        else if(l_Angle >= 90 || l_Angle == 140)
         {
             SetPatrolState();
+            
         }
         //transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(l_PlayerPosition), Time.deltaTime * m_VelRoataci�n)
 
