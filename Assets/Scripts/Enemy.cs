@@ -38,6 +38,8 @@ public class Enemy : MonoBehaviour
     public float m_EnemyCadence;
     float timer = 0.0f;
 
+    public Image m_Image;
+
     public List<GameObject> m_DroppingItems;
 
 
@@ -56,6 +58,7 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         m_Life = m_MaxLife;
+        m_Image.fillAmount = m_Life;
         GameController.GetGameController().AddEnemy(this);
         SetIdleState();
         ShowMaxLife();
@@ -103,7 +106,8 @@ public class Enemy : MonoBehaviour
         Vector3 l_EnemyPosition = transform.position;
         float l_Distance = Vector3.Distance(l_PlayerPosition, l_EnemyPosition);
         print(l_Distance);
-        
+
+        m_Image.fillAmount = m_Life;
     }
     void SetIdleState()
     {
