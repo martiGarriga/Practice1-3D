@@ -275,6 +275,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 183
   m_HitPatriclePrefab: {fileID: 9119652909250766746, guid: 28285c65b2a98b64d816e3e5c1e7f9e3, type: 3}
+  m_Shoot: {fileID: 7516004826788876446, guid: fe8624b8239b6d44e8dba978b745de2a, type: 3}
+  m_Impact: {fileID: 1297937073129364678, guid: 69418da21aaf4054dab4d022a61e1bd3, type: 3}
+  m_EnemyImpact: {fileID: 2312591318274358132, guid: 77da29788f3010e4396994ea52057980, type: 3}
   m_LeftKeyCode: 97
   m_BackKeyCode: 115
   m_RightKeyCode: 100
