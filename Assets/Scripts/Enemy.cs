@@ -39,16 +39,9 @@ public class Enemy : MonoBehaviour
     public float m_EnemyCadence;
     float timer = 0.0f;
 
-    public Image m_Image;
 
     public List<GameObject> m_DroppingItems;
 
-
-
-    [Header("LifeBar")]
-    public Transform m_LifeBarAnchor;
-    public RectTransform m_LifeBarBackGroundRectTransform;
-    public Image m_ImageLifeBar;
 
     void Awake()
     {
@@ -59,10 +52,8 @@ public class Enemy : MonoBehaviour
     void Start()
     {
         m_Life = m_MaxLife;
-        m_Image.fillAmount = m_Life;
         GameController.GetGameController().AddEnemy(this);
         SetIdleState();
-        ShowMaxLife();
         
     }
     private void OnDestroy()
@@ -102,7 +93,7 @@ public class Enemy : MonoBehaviour
         }
         
 
-        m_Image.fillAmount = m_Life;
+       
     }
     void SetIdleState()
     {
@@ -374,17 +365,7 @@ public class Enemy : MonoBehaviour
         m_NavMeshAgent.enabled = true;
         m_Life = m_MaxLife;
         SetIdleState();
-        ShowMaxLife();
     }
 
-    void ShowMaxLife()
-    {
-        m_ImageLifeBar.fillAmount = m_Life / (float)m_MaxLife;
-    }
-    void UpdateLifeBarPosition()
-    {
-        Vector3 l_ViewportPosition = GameController.GetGameController().m_Player.m_Camera.WorldToViewportPoint(m_LifeBarAnchor.position);
-        m_LifeBarBackGroundRectTransform.anchoredPosition = new Vector3(l_ViewportPosition.x * Screen.width, -(Screen.height- l_ViewportPosition.y*Screen.height));
-        m_LifeBarBackGroundRectTransform.gameObject.SetActive(l_ViewportPosition.z >= 0.0f);
-    }
+    
 }
